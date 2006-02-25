@@ -252,6 +252,9 @@ install_sub({
 
 L<Text::Truncate> does a very similar thing.
 
+So does L<Text::Elide>; it can truncate only between words, but lacks some
+other features.
+
 =head1 AUTHOR
 
 Ricardo Signes, C<< <rjbs at cpan.org> >>
