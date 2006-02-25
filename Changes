@@ -1,5 +1,11 @@
 Revision history for String-Truncate
 
+0.05    2006-02-24
+        fixed some bugs with short strings or long markers
+        trunc_ and elide_with_defaults for custom elide/trunc
+        new exporter with per-import defaults
+        extensive refactoring; 100% coverage!
+
 0.02    2005-10-15, a little later
         added 'ends' truncation
 

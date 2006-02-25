@@ -8,5 +8,6 @@ t/00-load.t
 t/basic.t
 t/boilerplate.t
 t/ends.t
+t/exports.t
 t/pod-coverage.t
 t/pod.t

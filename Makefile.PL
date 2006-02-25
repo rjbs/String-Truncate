@@ -9,7 +9,8 @@ WriteMakefile(
     ABSTRACT_FROM       => 'lib/String/Truncate.pm',
     PL_FILES            => {},
     PREREQ_PM => {
-        'Test::More' => 0,
+        'Test::More'   => 0,
+        'Sub::Install' => 0.03,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'String-Truncate-*' },
