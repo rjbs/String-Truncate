@@ -41,6 +41,8 @@ It's simple:
  elide($brain, 16, { truncate => 'middle' }); # third option
  elide($brain, 16, { truncate => 'ends' });   # fourth option
 
+ String::Trunc::trunc($brain, 16); # => "this is your bra"
+
 =head1 FUNCTIONS
 
 =head2 C< elide($string, $length, \%arg) >
@@ -56,46 +58,78 @@ Valid arguments are:
 
 =cut
 
+my %elider_for = (
+  right  => \&_elide_right,
+  left   => \&_elide_left,
+  middle => \&_elide_middle,
+  ends   => \&_elide_ends,
+);
+
+sub _elide_right {
+  &_assert_1ML;
+  my ($string, $length, $marker) = @_;
+  my $keep = $length - length($marker);
+  return substr($string, 0, $keep) . $marker;
+}
+
+sub _elide_left {
+  &_assert_1ML;
+  my ($string, $length, $marker) = @_;
+  my $keep = $length - length($marker);
+  return $marker . substr($string, -$keep, $keep);
+}
+
+sub _elide_middle {
+  &_assert_1ML;
+  my ($string, $length, $marker) = @_;
+  my $keep = $length - length($marker);
+  my ($keep_left, $keep_right) = (int($keep / 2)) x 2;
+  $keep_left +=1 if ($keep_left + $keep_right) < $keep;
+  return substr($string, 0, $keep_left)
+       . $marker
+       . substr($string, -$keep_right, $keep_right);
+}
+
+sub _elide_ends {
+  &_assert_2ML;
+  my ($string, $length, $marker) = @_;
+  my $keep = $length  -  2 * length($marker);
+  my $midpoint = int(length($string) / 2);
+  my $keep_left = $midpoint - int($keep / 2);
+  return $marker
+       . substr($string, $keep_left, $keep)
+       . $marker;
+}
+
+sub _assert_1ML {
+  my ($string, $length, $marker) = @_;
+  croak "elision marker <$marker> is longer than allowed length $length!"
+    if length($marker) > $length;
+}
+
+sub _assert_2ML {
+  my ($string, $length, $marker) = @_;
+  # this should only complain if needed: elide('foobar', 3, {marker=>'...'})
+  # should be ok -- rjbs, 2006-02-24
+  croak "two elision markers <$marker> are longer than allowed length $length!"
+    if (length($marker) * 2) > $length;
+}
+
 sub elide {
   my ($string, $length, $arg) = @_;
 
   $arg ||= {};
   my $truncate = $arg->{truncate} || 'right';
+
   croak "invalid value for truncate argument: $truncate"
-    unless grep { $_ eq $truncate } qw(left middle right ends);
-
-  my $marker = defined $arg->{marker} ? $arg->{marker} : '...';
-  croak "elision marker <$marker> is longer than allowed length $length!"
-    if length($marker) > $length;
-
-  croak "two elision markers <$marker> are longer than allowed length $length!"
-    if (length($marker) * 2) > $length;
+    unless my $elider = $elider_for{ $truncate };
 
   # hey, this might be really easy:
   return $string if length($string) <= $length;
-  
-  # how much of the string should be left?
-  my $keep = $length - length($marker);
 
-  if ($truncate eq 'right') {
-    return substr($string, 0, $keep) . $marker;
-  } elsif ($truncate eq 'left') {
-    return $marker . substr($string, -$keep, $keep);
-  } elsif ($truncate eq 'middle') {
-    my ($keep_left, $keep_right) = (int($keep / 2)) x 2;
-    $keep_left +=1 if ($keep_left + $keep_right) < $keep;
-    return substr($string, 0, $keep_left)
-         . $marker
-         . substr($string, -$keep_right, $keep_right);
-  } elsif ($truncate eq 'ends') {
-    $keep -= length($marker); # we're going to use two markers
-    my $midpoint = int(length($string) / 2);
-    my $keep_left = $midpoint - int($keep / 2);
-    return $marker
-         . substr($string, $keep_left, $keep)
-         . $marker;
-  }
-  return;
+  my $marker = defined $arg->{marker} ? $arg->{marker} : '...';
+  
+  return $elider->($string, $length, $marker);
 }
   
 =head2 C<< trunc($string, $length, \%arg) >>
