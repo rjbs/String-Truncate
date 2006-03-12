@@ -1,5 +1,8 @@
 Revision history for String-Truncate
 
+0.06    2006-03-12
+        replace custom exporter with Sub::Exporter
+
 0.05    2006-02-24
         fixed some bugs with short strings or long markers
         trunc_ and elide_with_defaults for custom elide/trunc

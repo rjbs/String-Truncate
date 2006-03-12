@@ -12,11 +12,13 @@ String::Truncate - a module for when strings are too long to be displayed in...
 
 =head1 VERSION
 
-version 0.03
+version 0.06
+
+ $Id$
 
 =cut
 
-our $VERSION = '0.03';
+our $VERSION = '0.06';
 
 =head1 SYNOPSIS
 
@@ -166,32 +168,13 @@ fully-qualified name to get the standard behavior.
 
 =cut
 
-# we export trunc or elide or :all
-# if "defaults" are given, we export subs that merge in options first
-my %_export_ok = map { $_ => 1 } qw(trunc elide);
-
-sub import {
-  my ($class, @args) = @_;
-  my %exports;
-  my $defaults;
-  while (local $_ = shift @args) {
-    if ($_export_ok{$_})  { $exports{$_} = 1; next }
-    if ($_ eq ':all')     { $exports{$_} = 1 for keys %_export_ok; next }
-    if ($_ eq 'defaults') { $defaults = shift @args; next }
-    Carp::croak "$_ not exported by $class";
-  }
-
-  my $into = caller(0);
-  
-  if (not $defaults) {
-    install_sub({ code => $_, into => $into }) for keys %exports;
-  } else {
-    for (keys %exports) {
-      my $code = $class->can("$_\_with_defaults")->($defaults);
-      install_sub({ code => $code, into => $into, as => $_});
-    }
-  }
-}
+use Sub::Exporter -setup => {
+  exports => {
+    trunc => sub { trunc_with_defaults($_[3]->{defaults}) },
+    elide => sub { elide_with_defaults($_[3]->{defaults}) },
+  },
+  collectors => [ qw(defaults) ]
+};
 
 =head1 BUILDING CODEREFS
 
@@ -214,7 +197,7 @@ sub _code_with_defaults {
   my ($code, $skip_defaults) = @_;
   
   sub {
-    my ($defaults) = @_;
+    my $defaults = shift || {};
     my %defaults = %$defaults;
     delete $defaults{$_} for @$skip_defaults;
 
@@ -230,10 +213,12 @@ sub _code_with_defaults {
   }
 }
 
-install_sub({
-  code => _code_with_defaults(\&elide),
-  as   => 'elide_with_defaults',
-});
+BEGIN {
+  install_sub({
+    code => _code_with_defaults(\&elide),
+    as   => 'elide_with_defaults',
+  });
+}
 
 =head2 C< trunc_with_defaults >
 
@@ -243,10 +228,12 @@ C<marker> argument is passed, it is ignored.
 
 =cut
 
-install_sub({
-  code => _code_with_defaults(\&trunc, ['marker']),
-  as   => 'trunc_with_defaults',
-});
+BEGIN {
+  install_sub({
+    code => _code_with_defaults(\&trunc, ['marker']),
+    as   => 'trunc_with_defaults',
+  });
+}
 
 =head1 SEE ALSO
 

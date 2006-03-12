@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More 'no_plan';
+use Test::More tests => 22;
 
 BEGIN { use_ok('String::Truncate'); }
 
@@ -15,15 +15,14 @@ main::ok(!__PACKAGE__->can('trunc'), "trunc is not exported sans request");
 
 package String::Truncate::TRUNC;
 
-BEGIN { main::use_ok('String::Truncate', qw(trunc)) }
-eval { String::Truncate->import(qw(trunc)); };
+String::Truncate->import(qw(trunc));
 
 main::ok(__PACKAGE__->can('trunc'),  "trunc is exported on request");
 main::ok(!__PACKAGE__->can('elide'), "elide is not exported sans request");
 
 package String::Truncate::BOTH;
 
-eval { String::Truncate->import(qw(trunc elide)); };
+String::Truncate->import(qw(trunc elide));
 
 main::ok(__PACKAGE__->can('trunc'), "trunc is exported on request");
 main::ok(__PACKAGE__->can('elide'), "elide is exported on request");
