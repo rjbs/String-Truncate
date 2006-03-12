@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More 'no_plan';
+use Test::More tests => 24;
 
 BEGIN { use_ok('String::Truncate', qw(elide trunc)); }
 
@@ -9,8 +9,10 @@ my $brain = "this is your brain";
 # len: 18 -- 123456789012345678
 
 my %code = (
-  elide => \&elide,
-  trunc => \&trunc,
+  elide   => \&elide,
+  trunc   => \&trunc,
+  'S:T:e' => String::Truncate->can('elide'),
+  'S:T:t' => String::Truncate->can('trunc'),
 );
 
 while (my ($name, $code) = each %code) {

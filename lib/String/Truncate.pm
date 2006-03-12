@@ -117,8 +117,7 @@ sub _assert_2ML {
 
 sub elide {
   my ($string, $length, $arg) = @_;
-
-  $arg ||= {};
+  $arg = {} unless $arg;
   my $truncate = $arg->{truncate} || 'right';
 
   croak "invalid value for truncate argument: $truncate"
@@ -141,7 +140,7 @@ truncates the string normally.
 
 sub trunc {
   my ($string, $length, $arg) = @_;
-  $arg ||= {};
+  $arg = {} unless $arg;
 
   croak "marker may not be passed to trunc()" if exists $arg->{marker};
   $arg->{marker} = '';
