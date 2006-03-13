@@ -39,7 +39,7 @@ package String::Truncate::JUNK;
 eval { String::Truncate->import(qw(huggalugga)); };
 main::like(
   $@,
-  qr/not exported by String::Truncate/,
+  qr/"huggalugga" is not exported by the String::Truncate module/,
   "don't accept bogus exports"
 );
 
