@@ -10,7 +10,7 @@ WriteMakefile(
     PL_FILES            => {},
     PREREQ_PM => {
         'Test::More'    => 0,
-        'Sub::Exporter' => 0.90,
+        'Sub::Exporter' => 0.953, # bugs and ::Util
         'Sub::Install'  => 0.03,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },

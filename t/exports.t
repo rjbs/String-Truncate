@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 22;
+use Test::More tests => 28;
 
 BEGIN { use_ok('String::Truncate'); }
 
@@ -75,6 +75,40 @@ package String::Truncate::DEFAULT_ALL;
 
 String::Truncate->import(
   ':all' => defaults => { truncate => 'left', length => 10, marker => '--' }
+);
+
+main::ok(__PACKAGE__->can('trunc'),  "trunc is exported on request");
+main::ok(__PACKAGE__->can('elide'),  "elide is exported on request");
+
+main::is(
+  elide("123456789ABCDEF"),
+  "--89ABCDEF",
+  "elide with default truncate/length",
+);
+
+main::is(
+  elide("123456789ABCDEF", 11),
+  "--789ABCDEF",
+  "elide with overridden default length",
+);
+
+
+main::is(
+  elide("123456789ABCDEF", undef, { truncate => 'right' }),
+  "12345678--",
+  "elide with overridden default truncate",
+);
+
+main::is(
+  trunc("123456789ABCDEF"),
+  "6789ABCDEF",
+  "trunc with default truncate/length",
+);
+
+package String::Truncate::DEFAULT_ARG;
+
+String::Truncate->import(
+  -all => { truncate => 'left', length => 10, marker => '--' }
 );
 
 main::ok(__PACKAGE__->can('trunc'),  "trunc is exported on request");

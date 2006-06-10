@@ -12,13 +12,13 @@ String::Truncate - a module for when strings are too long to be displayed in...
 
 =head1 VERSION
 
-version 0.06
+version 0.100
 
  $Id$
 
 =cut
 
-our $VERSION = '0.06';
+our $VERSION = '0.100';
 
 =head1 SYNOPSIS
 
@@ -156,10 +156,15 @@ Exporter-style ":all" tag.
   use String::Truncate ();        # export nothing
   use String::Truncate qw(elide); # export just elide()
   use String::Truncate qw(:all);  # export both elide() and trunc()
+  use String::Truncate qw(-all);  # export both elide() and trunc()
 
 When exporting, you may also supply default values:
 
-  use String::Truncate qw(:all) => defaults => { length => 10, marker => '--' };
+  use String::Truncate -all => defaults => { length => 10, marker => '--' };
+
+  # or
+
+  use String::Truncate -all => { length => 10, marker => '--' };
 
 These values affect only the imported version of the functions.  You may pass
 arguments as usual to override them, and you may call the subroutine by its
@@ -167,10 +172,13 @@ fully-qualified name to get the standard behavior.
 
 =cut
 
+use Sub::Exporter::Util ();
 use Sub::Exporter -setup => {
   exports => {
-    trunc => sub { trunc_with_defaults($_[3]->{defaults}) },
-    elide => sub { elide_with_defaults($_[3]->{defaults}) },
+    Sub::Exporter::Util::merge_col(defaults => {
+      trunc => sub { trunc_with_defaults($_[2]) },
+      elide => sub { elide_with_defaults($_[2]) },
+    })
   },
   collectors => [ qw(defaults) ]
 };

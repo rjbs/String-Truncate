@@ -1,5 +1,8 @@
 Revision history for String-Truncate
 
+0.100   2006-06-10
+        use Sub::Exporter::Util::merge_col to allow per-import args
+
 0.06    2006-03-12
         replace custom exporter with Sub::Exporter
 
