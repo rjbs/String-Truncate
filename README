@@ -1,0 +1,24 @@
+String-Truncate
+
+This module is useful when you need to turn:
+
+  "my boss is really stupid and just goes on and on"
+
+into 
+
+  "my boss is really ..."
+
+To install this module, run the following commands:
+
+    perl Makefile.PL
+    make
+    make test
+    make install
+
+
+COPYRIGHT AND LICENCE
+
+Copyright (C) 2005 Ricardo Signes
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
