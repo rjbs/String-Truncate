@@ -143,7 +143,7 @@ sub trunc {
   $arg = {} unless $arg;
 
   croak "marker may not be passed to trunc()" if exists $arg->{marker};
-  $arg->{marker} = q{}
+  $arg->{marker} = q{};
 
   return elide($string, $length, $arg);
 }
