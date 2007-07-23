@@ -1,7 +1,7 @@
 Revision history for String-Truncate
 
-0.101   2006-11-13
-        packaging improvements
+0.102   2007-07-23
+        add at_space option to break text at whitespace
 
 0.100   2006-06-10
         use Sub::Exporter::Util::merge_col to allow per-import args

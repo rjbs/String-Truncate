@@ -12,13 +12,13 @@ String::Truncate - a module for when strings are too long to be displayed in...
 
 =head1 VERSION
 
-version 0.101
+version 0.102
 
  $Id$
 
 =cut
 
-our $VERSION = '0.101';
+our $VERSION = '0.102';
 
 =head1 SYNOPSIS
 
@@ -55,6 +55,7 @@ Valid arguments are:
 
  elide  - elide at left, right, middle, or ends? (default: right)
  marker - how to mark the elision (default: ...)
+ at_space - if true, strings will be broken at whitespace if possible
 
 =cut
 
@@ -67,38 +68,59 @@ my %elider_for = (
 
 sub _elide_right {
   &_assert_1ML; ## no critic Ampersand
-  my ($string, $length, $marker) = @_;
+  my ($string, $length, $marker, $at_space) = @_;
   my $keep = $length - length($marker);
-  return substr($string, 0, $keep) . $marker;
+
+  if ($at_space) {
+    
+    my ($substr) = $string =~ /\A(.{0,$keep})\s/;
+    $substr = substr($string, 0, $keep) 
+      unless defined $substr and length $substr;
+
+    return $substr . $marker;
+  } else {
+    return substr($string, 0, $keep) . $marker;
+  }
 }
 
 sub _elide_left {
   &_assert_1ML; ## no critic Ampersand
-  my ($string, $length, $marker) = @_;
+  my ($string, $length, $marker, $at_space) = @_;
   my $keep = $length - length($marker);
-  return $marker . substr($string, -$keep, $keep);
+  return $marker
+       . reverse(_elide_right(scalar reverse($string), $keep, q{}, $at_space));
 }
 
 sub _elide_middle {
   &_assert_1ML; ## no critic Ampersand
-  my ($string, $length, $marker) = @_;
+  my ($string, $length, $marker, $at_space) = @_;
   my $keep = $length - length($marker);
   my ($keep_left, $keep_right) = (int($keep / 2)) x 2;
   $keep_left +=1 if ($keep_left + $keep_right) < $keep;
-  return substr($string, 0, $keep_left)
+  return _elide_right($string, $keep_left, q{}, $at_space)
        . $marker
-       . substr($string, -$keep_right, $keep_right);
+       . _elide_left($string, $keep_right, q{}, $at_space)
 }
+
+# sub _elide_ends {
+#   &_assert_2ML; ## no critic Ampersand
+#   my ($string, $length, $marker) = @_;
+#   my $keep = $length  -  2 * length($marker);
+#   my $midpoint = int(length($string) / 2);
+#   my $keep_left = $midpoint - int($keep / 2);
+#   return $marker
+#        . substr($string, $keep_left, $keep)
+#        . $marker;
+# }
 
 sub _elide_ends {
   &_assert_2ML; ## no critic Ampersand
-  my ($string, $length, $marker) = @_;
-  my $keep = $length  -  2 * length($marker);
+  my ($string, $length, $marker, $at_space) = @_;
   my $midpoint = int(length($string) / 2);
-  my $keep_left = $midpoint - int($keep / 2);
-  return $marker
-       . substr($string, $keep_left, $keep)
-       . $marker;
+  my $each = int($length / 2);
+
+  return _elide_left(substr($string, 0, $midpoint), $each, $marker, $at_space)
+       . _elide_right(substr($string, -$midpoint), $each, $marker, $at_space)
 }
 
 sub _assert_1ML {
@@ -127,8 +149,9 @@ sub elide {
   return $string if length($string) <= $length;
 
   my $marker = defined $arg->{marker} ? $arg->{marker} : '...';
+  my $at_space = defined $arg->{at_space} ? $arg->{at_space} : 0;
   
-  return $elider->($string, $length, $marker);
+  return $elider->($string, $length, $marker, $at_space);
 }
   
 =head2 C<< trunc($string, $length, \%arg) >>
@@ -244,36 +267,32 @@ BEGIN {
 
 =head1 SEE ALSO
 
-L<Text::Truncate> does a very similar thing.
-
-So does L<Text::Elide>; it can truncate only between words, but lacks some
-other features.
+L<Text::Truncate> does a very similar thing.  So does L<Text::Elide>.
 
 =head1 AUTHOR
 
-Ricardo Signes, C<< <rjbs at cpan.org> >>
+Ricardo SIGNES, C<< <rjbs at cpan.org> >>
 
 =head1 BUGS
 
-Please report any bugs or feature requests to
-C<bug-string-truncate@rt.cpan.org>, or through the web interface at
-L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=String-Truncate>.
-I will be notified, and then you'll automatically be notified of progress on
-your bug as I make changes.
+Please report any bugs or feature requests through the web interface at
+L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=String-Truncate>.  I will be
+notified, and then you'll automatically be notified of progress on your bug as
+I make changes.
 
 =head1 ACKNOWLEDGEMENTS
 
 Ian Langworth gave me some good advice about naming things.  (Also some bad
 jokes.  Nobody wants String::ETOOLONG, Ian.)  Hans Dieter Pearcey suggested
-allowing defaults just in time for a long bus ride, rescued from bordom by that
-suggestion
+allowing defaults just in time for a long bus ride, and I was rescued from
+boredom by that suggestion
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2005-2006 Ricardo Signes, all rights reserved.
+Copyright 2005-2007 Ricardo SIGNES.
 
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
+This program is free software; you can redistribute it and/or modify it under
+the same terms as Perl itself.
 
 =cut
 

@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 24;
+use Test::More tests => 30;
 
 BEGIN { use_ok('String::Truncate', qw(elide trunc)); }
 
@@ -108,4 +108,52 @@ is(
   elide("foobar", 5),
   "fo...",
   "keep-left elision of a very short string",
+);
+
+is(
+  #      12345678901234567890123456789012
+  trunc("This should break between words.", 14, { at_space => 1 }),
+  "This should",
+  "at_space lets us break betwen words (at right)",
+);
+
+is(
+  #      21098765432109876543210987654321
+  trunc("This should break between words.", 14,
+    { truncate => 'left', at_space => 1 }
+  ),
+  "between words.",
+  "at_space lets us break betwen words (at left)",
+);
+
+is(
+  #      12345678901234567890123456789012
+  elide("This should break between words.", 14, { at_space => 1 }),
+  "This should...",
+  "at_space lets us break betwen words (elide, at right)",
+);
+
+is(
+  #      21098765432109876543210987654321
+  elide("This should break between words.", 14,
+    { truncate => 'left', at_space => 1 }
+  ),
+  "...words.",
+  "at_space lets us break betwen words (elide, at left)",
+);
+
+is(
+  #      12345678901234567890123456789012
+  elide("This should break between words.", 20,
+    { truncate => 'middle', at_space => 1 }
+  ),
+  "This...words.",
+  "at_space lets us break betwen words (elide, at middle)",
+);
+
+is(
+  #      123456789012345678901234567890123
+  elide("Thisisonereallylongstringnospace.", 20, { at_space => 1 }),
+  "Thisisonereallylo...",
+  "if it can't break at a word boundary, it breaks as late as possible",
 );
