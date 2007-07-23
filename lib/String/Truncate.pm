@@ -102,17 +102,6 @@ sub _elide_middle {
        . _elide_left($string, $keep_right, q{}, $at_space)
 }
 
-# sub _elide_ends {
-#   &_assert_2ML; ## no critic Ampersand
-#   my ($string, $length, $marker) = @_;
-#   my $keep = $length  -  2 * length($marker);
-#   my $midpoint = int(length($string) / 2);
-#   my $keep_left = $midpoint - int($keep / 2);
-#   return $marker
-#        . substr($string, $keep_left, $keep)
-#        . $marker;
-# }
-
 sub _elide_ends {
   &_assert_2ML; ## no critic Ampersand
   my ($string, $length, $marker, $at_space) = @_;
