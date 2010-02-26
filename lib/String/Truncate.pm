@@ -1,24 +1,10 @@
-package String::Truncate;
-
-use warnings;
 use strict;
+use warnings;
+package String::Truncate;
+# ABSTRACT: a module for when strings are too long to be displayed in...
 
 use Carp qw(croak);
-use Sub::Install qw(install_sub);
-
-=head1 NAME
-
-String::Truncate - a module for when strings are too long to be displayed in...
-
-=head1 VERSION
-
-version 0.102
-
- $Id$
-
-=cut
-
-our $VERSION = '0.102';
+use Sub::Install 0.03 qw(install_sub);
 
 =head1 SYNOPSIS
 
@@ -43,9 +29,9 @@ It's simple:
 
  String::Trunc::trunc($brain, 16); # => "this is your bra"
 
-=head1 THE BASICS
+=func elide
 
-=head2 C< elide($string, $length, \%arg) >
+  elide($string, $length, \%arg)
 
 This function returns the string, if it is less than or equal to C<$length>
 characters long.  If it is longer, it truncates the string and marks the
@@ -143,7 +129,9 @@ sub elide {
   return $elider->($string, $length, $marker, $at_space);
 }
   
-=head2 C<< trunc($string, $length, \%arg) >>
+=func trunc
+
+  trunc($string, $length, \%arg)
 
 This acts just like C<elide>, but assumes an empty marker, so it actually
 truncates the string normally.
@@ -185,7 +173,7 @@ fully-qualified name to get the standard behavior.
 =cut
 
 use Sub::Exporter::Util ();
-use Sub::Exporter -setup => {
+use Sub::Exporter 0.953 -setup => {
   exports => {
     Sub::Exporter::Util::merge_col(defaults => {
       trunc => sub { trunc_with_defaults($_[2]) },
@@ -202,7 +190,7 @@ in given values to the defaults.  You can build your own closures without
 importing them into your namespace.  To do this, use the C<elide_with_defaults>
 and C<trunc_with_defaults> routines.
 
-=head2 C< elide_with_defaults >
+=head2 elide_with_defaults
 
   my $elider = String::Truncate::elide_with_defaults(\%arg);
 
@@ -239,7 +227,7 @@ BEGIN {
   });
 }
 
-=head2 C< trunc_with_defaults >
+=head2 trunc_with_defaults
 
 This routine behaves exactly like elide_with_defaults, with one obvious
 exception: it retuns code that works like C<trunc> rather than C<elide>.  If a
@@ -258,10 +246,6 @@ BEGIN {
 
 L<Text::Truncate> does a very similar thing.  So does L<Text::Elide>.
 
-=head1 AUTHOR
-
-Ricardo SIGNES, C<< <rjbs at cpan.org> >>
-
 =head1 BUGS
 
 Please report any bugs or feature requests through the web interface at
@@ -275,13 +259,6 @@ Ian Langworth gave me some good advice about naming things.  (Also some bad
 jokes.  Nobody wants String::ETOOLONG, Ian.)  Hans Dieter Pearcey suggested
 allowing defaults just in time for a long bus ride, and I was rescued from
 boredom by that suggestion
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2005-2007 Ricardo SIGNES.
-
-This program is free software; you can redistribute it and/or modify it under
-the same terms as Perl itself.
 
 =cut
 
