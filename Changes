@@ -1,6 +1,8 @@
 Revision history for String-Truncate
 
 {{$NEXT}}
+
+1.100570  2010-02-26 15:09:16 America/New_York
         do not break elide at_space on newline; resolves RT #45493
         convert to Dist::Zilla
 
