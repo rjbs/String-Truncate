@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 30;
+use Test::More 0.88;
 
 BEGIN { use_ok('String::Truncate', qw(elide trunc)); }
 
@@ -117,6 +117,23 @@ is(
   "at_space lets us break betwen words (at right)",
 );
 
+{
+  my $s = 'a ' x 20 . "\n\n" . 'b ' x 20;
+
+  like(
+    elide($s, 50, { at_space => 1 }),
+    qr/b/,
+    "newlines don't break at_space",
+  );
+}
+
+is(
+  #      12345678901234567890123456789012
+  trunc("This should break between words.", 14, { at_space => 1 }),
+  "This should",
+  "at_space lets us break betwen words (at right)",
+);
+
 is(
   #      21098765432109876543210987654321
   trunc("This should break between words.", 14,
@@ -157,3 +174,5 @@ is(
   "Thisisonereallylo...",
   "if it can't break at a word boundary, it breaks as late as possible",
 );
+
+done_testing;

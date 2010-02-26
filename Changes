@@ -1,5 +1,9 @@
 Revision history for String-Truncate
 
+{{$NEXT}}
+        do not break elide at_space on newline; resolves RT #45493
+        convert to Dist::Zilla
+
 0.102   2007-07-23
         add at_space option to break text at whitespace
 

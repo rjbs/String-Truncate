@@ -59,7 +59,7 @@ sub _elide_right {
 
   if ($at_space) {
     
-    my ($substr) = $string =~ /\A(.{0,$keep})\s/;
+    my ($substr) = $string =~ /\A(.{0,$keep})\s/s;
     $substr = substr($string, 0, $keep) 
       unless defined $substr and length $substr;
 
