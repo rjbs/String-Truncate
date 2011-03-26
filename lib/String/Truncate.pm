@@ -39,8 +39,8 @@ elision.
 
 Valid arguments are:
 
- elide  - elide at left, right, middle, or ends? (default: right)
- marker - how to mark the elision (default: ...)
+ truncate - elide at left, right, middle, or ends? (default: right)
+ marker   - how to mark the elision (default: ...)
  at_space - if true, strings will be broken at whitespace if possible
 
 =cut
