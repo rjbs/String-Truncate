@@ -2,6 +2,9 @@ Revision history for String-Truncate
 
 {{$NEXT}}
 
+1.100601  2013-10-15 22:38:52 America/New_York
+          update bugtracker and repo metadata
+
 1.100600  2011-03-26 07:32:57 America/New_York
           fix documention: the argument is "truncate" not "elite"
           (thanks for the report, Tommy Stanton!)
