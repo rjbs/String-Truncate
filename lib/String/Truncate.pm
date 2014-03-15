@@ -195,7 +195,7 @@ and C<trunc_with_defaults> routines.
   my $elider = String::Truncate::elide_with_defaults(\%arg);
 
 This routine, never exported, builds a coderef which behaves like C<elide>, but
-uses default values when needed.  All the valud arguments to C<elide> are valid
+uses default values when needed.  All the valid arguments to C<elide> are valid
 here, as well as C<length>.
 
 =cut
@@ -230,7 +230,7 @@ BEGIN {
 =head2 trunc_with_defaults
 
 This routine behaves exactly like elide_with_defaults, with one obvious
-exception: it retuns code that works like C<trunc> rather than C<elide>.  If a
+exception: it returns code that works like C<trunc> rather than C<elide>.  If a
 C<marker> argument is passed, it is ignored.
 
 =cut
