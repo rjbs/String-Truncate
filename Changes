@@ -1,6 +1,8 @@
 Revision history for String-Truncate
 
 {{$NEXT}}
+
+1.100603  2022-12-31 15:48:46-05:00 America/New_York
         - update packaging and metadata
         - minimum required Perl is now v5.12
 
